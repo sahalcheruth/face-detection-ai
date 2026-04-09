@@ -12,6 +12,29 @@ from .models import Image, Wedding,FaceEncoding
 
 from .services.face_encode import encode_faces
 
+
+
+
+
+
+
+@api_view(['POST'])
+def create_wedding(request):
+    name = request.data.get('name')
+
+    if not name:
+        return Response({"error": "Wedding name is required"}, status=400)
+
+    wedding = Wedding.objects.create(name=name)
+
+    return Response({
+        "message": "Wedding created successfully",
+        "wedding_id": wedding.id,
+        "name": wedding.name
+    })
+
+
+
 @api_view(['POST'])
 def upload_images(request):
     wedding_id = request.data.get('wedding_id')
