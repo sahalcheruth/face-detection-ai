@@ -1,20 +1,21 @@
 FROM python:3.10
 
-# Install system dependencies for dlib
+# Install system dependencies (keep minimal)
 RUN apt-get update && apt-get install -y \
-    build-essential \
-    cmake \
-    libopenblas-dev \
-    liblapack-dev \
-    libx11-dev \
-    libgtk-3-dev \
+    libgl1 \
+    libglib2.0-0 \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /app
 
 COPY . .
 
+# Upgrade pip
 RUN pip install --upgrade pip
-RUN pip install -r requirements.txt
+
+
+RUN pip install dlib-bin==20.0.1
+
+RUN pip install --prefer-binary -r requirements.txt
 
 CMD ["gunicorn", "your_project_name.wsgi:application", "--bind", "0.0.0.0:8000"]
